@@ -1,0 +1,1 @@
+This questionnaire is part of a research study on the awareness, adoption, and challenges of AI-powered cataloguing tools among LIS professionals in Indian university libraries. Your responses will remain strictly confidential and will be used solely for academic research.
