@@ -357,8 +357,8 @@
   <!-- Header -->
   <div class="form-header">
     <div class="form-tag">Research Questionnaire</div>
-    <div class="form-title">AI-Powered Tools for Metadata Creation and Cataloguing in academic Libraries</div>
-    <div class="form-subtitle">This questionnaire is part of a research study on the awareness, adoption, and challenges of AI-powered cataloguing tools among LIS professionals in Indian academic libraries. Your responses will remain strictly confidential and will be used solely for academic research.</div>
+    <div class="form-title">AI-Powered Tools for Metadata Creation and Cataloguing in University Libraries</div>
+    <div class="form-subtitle">This questionnaire is part of a research study on the awareness, adoption, and challenges of AI-powered cataloguing tools among LIS professionals in Indian university libraries. Your responses will remain strictly confidential and will be used solely for academic research.</div>
     <div class="form-meta">
       <span class="form-meta-item">Takes 8–10 minutes</span>
       <span class="form-meta-item">25 questions</span>
@@ -877,6 +877,8 @@ function getLikertValues() {
 
 function submitForm() {
 
+  const likert = getLikertValues().split(" | ");
+
   const data = {
     q1: getRadioValue('q1'),
     q2: getRadioValue('q2'),
@@ -893,22 +895,13 @@ function submitForm() {
     q13: getRadioValue('q13'),
     q14: getRadioValue('q14'),
     q15: getRadioValue('q15'),
-    const likert = getLikertValues().split(" | ");
 
-const data = {
-  q1: getRadioValue('q1'),
-  q2: getRadioValue('q2'),
-  ...
-  q15: getRadioValue('q15'),
-  q16_1: likert[0],
-  q16_2: likert[1],
-  q16_3: likert[2],
-  q16_4: likert[3],
-  q16_5: likert[4],
+    q16_1: likert[0],
+    q16_2: likert[1],
+    q16_3: likert[2],
+    q16_4: likert[3],
+    q16_5: likert[4],
 
-  q17: getRadioValue('q17'),
-  ...
-};
     q17: getRadioValue('q17'),
     q18: getRadioValue('q18'),
     q19: getRadioValue('q19'),
@@ -937,6 +930,3 @@ const data = {
     console.error(err);
   });
 }
-</script>
-</body>
-</html>
