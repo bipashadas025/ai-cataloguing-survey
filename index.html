@@ -1,0 +1,942 @@
+
+
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --ink: #1a1a2e;
+    --ink-light: #4a4a6a;
+    --ink-muted: #8888aa;
+    --paper: #faf9f7;
+    --paper-warm: #f4f1ec;
+    --accent: #2d6a4f;
+    --accent-light: #52b788;
+    --accent-pale: #d8f3dc;
+    --border: #e0ddd8;
+    --border-focus: #2d6a4f;
+    --error: #c1121f;
+    --error-pale: #fce4e4;
+    --section-colors: #2d6a4f, #1d3557, #6a2d5e, #7b4f12, #1a5276;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: #e8e4de;
+    min-height: 100vh;
+    padding: 24px 16px 60px;
+    color: var(--ink);
+  }
+
+  .form-shell {
+    max-width: 680px;
+    margin: 0 auto;
+  }
+
+  /* Header card */
+  .form-header {
+    background: var(--accent);
+    border-radius: 12px 12px 0 0;
+    padding: 32px 32px 28px;
+    position: relative;
+    overflow: hidden;
+  }
+  .form-header::before {
+    content: '';
+    position: absolute;
+    top: -40px; right: -40px;
+    width: 160px; height: 160px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.07);
+  }
+  .form-header::after {
+    content: '';
+    position: absolute;
+    bottom: -20px; left: 60px;
+    width: 100px; height: 100px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.05);
+  }
+  .form-tag {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--accent-light);
+    margin-bottom: 10px;
+  }
+  .form-title {
+    font-family: 'DM Serif Display', serif;
+    font-size: 22px;
+    color: #ffffff;
+    line-height: 1.3;
+    margin-bottom: 12px;
+  }
+  .form-subtitle {
+    font-size: 13px;
+    color: rgba(255,255,255,0.75);
+    line-height: 1.6;
+    margin-bottom: 16px;
+  }
+  .form-meta {
+    display: flex;
+    gap: 16px;
+    flex-wrap: wrap;
+  }
+  .form-meta-item {
+    font-size: 12px;
+    color: rgba(255,255,255,0.6);
+    display: flex;
+    align-items: center;
+    gap: 5px;
+  }
+  .form-meta-item::before {
+    content: '◦';
+    color: var(--accent-light);
+  }
+
+  /* Progress bar */
+  .progress-bar {
+    background: #d0ccc6;
+    height: 3px;
+  }
+  .progress-fill {
+    height: 100%;
+    background: var(--accent);
+    transition: width 0.4s ease;
+    width: 0%;
+  }
+
+  /* Section labels */
+  .section-label {
+    background: var(--paper);
+    border-left: 3px solid var(--accent);
+    padding: 14px 24px 14px 20px;
+    margin-top: 16px;
+    margin-bottom: 0;
+    border-radius: 0;
+  }
+  .section-label:first-of-type { margin-top: 0; }
+  .section-name {
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 2px;
+  }
+  .section-desc {
+    font-size: 12px;
+    color: var(--ink-muted);
+  }
+
+  /* Question cards */
+  .q-card {
+    background: var(--paper);
+    padding: 20px 24px;
+    border-bottom: 0.5px solid var(--border);
+    transition: background 0.15s;
+  }
+  .q-card:last-child { border-bottom: none; }
+  .q-card:hover { background: #fdfcfa; }
+
+  .q-num {
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--ink-muted);
+    letter-spacing: 0.06em;
+    margin-bottom: 6px;
+  }
+  .q-text {
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--ink);
+    line-height: 1.55;
+    margin-bottom: 14px;
+  }
+  .q-required {
+    color: var(--error);
+    font-size: 12px;
+    margin-left: 3px;
+  }
+  .q-hint {
+    font-size: 12px;
+    color: var(--ink-muted);
+    margin-bottom: 12px;
+    margin-top: -8px;
+    font-style: italic;
+  }
+
+  /* Radio options */
+  .options-list { display: flex; flex-direction: column; gap: 8px; }
+  .opt-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    padding: 9px 12px;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.15s;
+    background: var(--paper-warm);
+  }
+  .opt-item:hover { border-color: var(--accent-light); background: var(--accent-pale); }
+  .opt-item.selected { border-color: var(--accent); background: var(--accent-pale); }
+  .opt-radio {
+    width: 16px; height: 16px;
+    border-radius: 50%;
+    border: 2px solid var(--border);
+    flex-shrink: 0;
+    margin-top: 1px;
+    transition: all 0.15s;
+    position: relative;
+  }
+  .opt-item.selected .opt-radio { border-color: var(--accent); background: var(--accent); }
+  .opt-item.selected .opt-radio::after {
+    content: '';
+    position: absolute;
+    top: 2px; left: 2px;
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    background: white;
+  }
+  .opt-label { font-size: 13px; color: var(--ink); line-height: 1.45; }
+
+  /* Checkbox options */
+  .opt-check {
+    width: 16px; height: 16px;
+    border-radius: 4px;
+    border: 2px solid var(--border);
+    flex-shrink: 0;
+    margin-top: 1px;
+    transition: all 0.15s;
+    position: relative;
+  }
+  .opt-item.checked .opt-check { border-color: var(--accent); background: var(--accent); }
+  .opt-item.checked .opt-check::after {
+    content: '✓';
+    position: absolute;
+    top: -1px; left: 1px;
+    color: white;
+    font-size: 11px;
+    font-weight: 600;
+  }
+
+  /* Likert scale */
+  .likert-wrap { overflow-x: auto; padding-bottom: 4px; }
+  .likert-table { width: 100%; border-collapse: separate; border-spacing: 0; min-width: 360px; }
+  .likert-header th {
+    font-size: 11px;
+    font-weight: 500;
+    color: var(--ink-muted);
+    text-align: center;
+    padding: 6px 4px;
+    border-bottom: 1px solid var(--border);
+  }
+  .likert-header th:first-child { text-align: left; padding-left: 0; }
+  .likert-row td {
+    padding: 8px 4px;
+    text-align: center;
+    border-bottom: 0.5px solid var(--border);
+    font-size: 12px;
+    color: var(--ink);
+  }
+  .likert-row td:first-child { text-align: left; padding-left: 0; font-size: 13px; }
+  .likert-row:last-child td { border-bottom: none; }
+  .likert-btn {
+    width: 28px; height: 28px;
+    border-radius: 50%;
+    border: 2px solid var(--border);
+    cursor: pointer;
+    background: var(--paper-warm);
+    transition: all 0.15s;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--ink-muted);
+    margin: auto;
+  }
+  .likert-btn:hover { border-color: var(--accent-light); background: var(--accent-pale); color: var(--accent); }
+  .likert-btn.active { border-color: var(--accent); background: var(--accent); color: white; }
+
+  /* Text input */
+  .text-input {
+    width: 100%;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 10px 12px;
+    font-size: 13px;
+    font-family: 'DM Sans', sans-serif;
+    color: var(--ink);
+    background: var(--paper-warm);
+    resize: vertical;
+    min-height: 80px;
+    transition: border-color 0.15s;
+    outline: none;
+  }
+  .text-input:focus { border-color: var(--accent); background: white; }
+  .text-input::placeholder { color: var(--ink-muted); }
+
+  .text-input-sm {
+    min-height: unset;
+    height: 42px;
+    resize: none;
+  }
+
+  /* Footer card */
+  .form-footer {
+    background: var(--paper);
+    border-radius: 0 0 12px 12px;
+    padding: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-top: 1px solid var(--border);
+  }
+  .submit-btn {
+    background: var(--accent);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    padding: 11px 28px;
+    font-size: 14px;
+    font-weight: 600;
+    font-family: 'DM Sans', sans-serif;
+    cursor: pointer;
+    transition: all 0.2s;
+    letter-spacing: 0.02em;
+  }
+  .submit-btn:hover { background: #1f5038; transform: translateY(-1px); box-shadow: 0 4px 12px rgba(45,106,79,0.3); }
+  .clear-btn {
+    background: none;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 10px 18px;
+    font-size: 13px;
+    color: var(--ink-muted);
+    font-family: 'DM Sans', sans-serif;
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+  .clear-btn:hover { border-color: var(--ink-muted); color: var(--ink); }
+
+  /* Success screen */
+  .success-screen {
+    display: none;
+    background: var(--paper);
+    border-radius: 0 0 12px 12px;
+    padding: 48px 32px;
+    text-align: center;
+  }
+  .success-icon { font-size: 48px; margin-bottom: 16px; }
+  .success-title { font-family: 'DM Serif Display', serif; font-size: 22px; color: var(--accent); margin-bottom: 8px; }
+  .success-msg { font-size: 14px; color: var(--ink-light); line-height: 1.6; }
+
+  .note-strip {
+    background: var(--accent-pale);
+    border-left: 3px solid var(--accent);
+    padding: 10px 14px;
+    margin: 0 24px 16px;
+    border-radius: 0 6px 6px 0;
+    font-size: 12px;
+    color: var(--accent);
+    font-weight: 500;
+  }
+</style>
+</head>
+<body>
+
+<div class="form-shell">
+  <!-- Header -->
+  <div class="form-header">
+    <div class="form-tag">Research Questionnaire</div>
+    <div class="form-title">AI-Powered Tools for Metadata Creation and Cataloguing in academic Libraries</div>
+    <div class="form-subtitle">This questionnaire is part of a research study on the awareness, adoption, and challenges of AI-powered cataloguing tools among LIS professionals in Indian academic libraries. Your responses will remain strictly confidential and will be used solely for academic research.</div>
+    <div class="form-meta">
+      <span class="form-meta-item">Takes 8–10 minutes</span>
+      <span class="form-meta-item">25 questions</span>
+      <span class="form-meta-item">6 sections</span>
+      <span class="form-meta-item">* Required</span>
+    </div>
+  </div>
+
+  <div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
+
+  <div id="formBody">
+
+  <!-- SECTION A -->
+  <div class="section-label">
+    <div class="section-name">Section A — Your Professional Profile</div>
+    <div class="section-desc">5 questions · Helps us understand who our respondents are</div>
+  </div>
+
+  <!-- Q1 -->
+  <div class="q-card">
+    <div class="q-num">Q1 OF 25</div>
+    <div class="q-text">What is your current designation?<span class="q-required">*</span></div>
+    <div class="options-list" data-type="radio" data-q="q1">
+      <div class="opt-item" onclick="selectOpt(this)"><div class="opt-radio"></div><div class="opt-label">Librarian / Senior Librarian</div></div>
+      <div class="opt-item" onclick="selectOpt(this)"><div class="opt-radio"></div><div class="opt-label">Library Assistant</div></div>
+      <div class="opt-item" onclick="selectOpt(this)"><div class="opt-radio"></div><div class="opt-label">Technical Services / Cataloguing Librarian</div></div>
+      <div class="opt-item" onclick="selectOpt(this)"><div class="opt-radio"></div><div class="opt-label">Systems / Digital Librarian</div></div>
+      <div class="opt-item" onclick="selectOpt(this)"><div class="opt-radio"></div><div class="opt-label">Deputy / University Librarian</div></div>
+      <div class="opt-item" onclick="selectOpt(this)"><div class="opt-radio"></div><div class="opt-label">LIS Faculty / Researcher</div></div>
+      <div class="opt-item" onclick="selectOpt(this)"><div class="opt-radio"></div><div class="opt-label">Other</div></div>
+    </div>
+  </div>
+
+  <!-- Q2 -->
+  <div class="q-card">
+    <div class="q-num">Q2 OF 25</div>
+    <div class="q-text">How many years of experience do you have in library work?<span class="q-required">*</span></div>
+    <div class="options-list" data-type="radio" data-q="q2">
+      <div class="opt-item" onclick="selectOpt(this)"><div class="opt-radio"></div><div class="opt-label">Less than 2 years</div></div>
+      <div class="opt-item" onclick="selectOpt(this)"><div class="opt-radio"></div><div class="opt-label">2–5 years</div></div>
+      <div class="opt-item" onclick="selectOpt(this)"><div class="opt-radio"></div><div class="opt-label">6–10 years</div></div>
+      <div class="opt-item" onclick="selectOpt(this)"><div class="opt-radio"></div><div class="opt-label">11–20 years</div></div>
+      <div class="opt-item" onclick="selectOpt(this)"><div class="opt-radio"></div><div class="opt-label">More than 20 years</div></div>
+    </div>
+  </div>
+
+  <!-- Q3 -->
+  <div class="q-card">
+    <div class="q-num">Q3 OF 25</div>
+    <div class="q-text">What type of library do you work in?<span class="q-required">*</span></div>
+    <div class="options-list" data-type="radio" data-q="q3">
+      <div class="opt-item" onclick="selectOpt(this)"><div class="opt-radio"></div><div class="opt-label">Central University Library</div></div>
+      <div class="opt-item" onclick="selectOpt(this)"><div class="opt-radio"></div><div class="opt-label">IIT / IISc / NIT Library</div></div>
+      <div class="opt-item" onclick="selectOpt(this)"><div class="opt-radio"></div><div class="opt-label">State University Library</div></div>
+      <div class="opt-item" onclick="selectOpt(this)"><div class="opt-radio"></div><div class="opt-label">Autonomous College Library</div></div>
+      <div class="opt-item" onclick="selectOpt(this)"><div class="opt-radio"></div><div class="opt-label">Corporate / Special Library</div></div>
+      <div class="opt-item" onclick="selectOpt(this)"><div class="opt-radio"></div><div class="opt-label">Other</div></div>
+    </div>
+  </div>
+
+  <!-- Q4 -->
+  <div class="q-card">
+    <div class="q-num">Q4 OF 25</div>
+    <div class="q-text">Which Library Management System (LMS) does your library use?<span class="q-required">*</span></div>
+    <div class="q-hint">Select all that apply</div>
+    <div class="options-list" data-type="checkbox" data-q="q4">
+      <div class="opt-item" onclick="toggleCheck(this)"><div class="opt-check"></div><div class="opt-label">Koha</div></div>
+      <div class="opt-item" onclick="toggleCheck(this)"><div class="opt-check"></div><div class="opt-label">LibSys</div></div>
+      <div class="opt-item" onclick="toggleCheck(this)"><div class="opt-check"></div><div class="opt-label">Libsoft</div></div>
+      <div class="opt-item" onclick="toggleCheck(this)"><div class="opt-check"></div><div class="opt-label">Alma (Ex Libris)</div></div>
+      <div class="opt-item" onclick="toggleCheck(this)"><div class="opt-check"></div><div class="opt-label">SOUL (INFLIBNET)</div></div>
+      <div class="opt-item" onclick="toggleCheck(this)"><div class="opt-check"></div><div class="opt-label">Other</div></div>
+    </div>
+  </div>
+
+  <!-- Q5 -->
+  <div class="q-card">
+    <div class="q-num">Q5 OF 25</div>
+    <div class="q-text">Are you involved in cataloguing or metadata creation in your current role?<span class="q-required">*</span></div>
+    <div class="options-list" data-type="radio" data-q="q5">
+      <div class="opt-item" onclick="selectOpt(this)"><div class="opt-radio"></div><div class="opt-label">Yes — this is my primary responsibility</div></div>
+      <div class="opt-item" onclick="selectOpt(this)"><div class="opt-radio"></div><div class="opt-label">Yes — partly, along with other duties</div></div>
+      <div class="opt-item" onclick="selectOpt(this)"><div class="opt-radio"></div><div class="opt-label">No — but I am aware of the cataloguing process</div></div>
+      <div class="opt-item" onclick="selectOpt(this)"><div class="opt-radio"></div><div class="opt-label">No — I am not involved in cataloguing</div></div>
+    </div>
+  </div>
+
+  <!-- SECTION B -->
+  <div class="section-label">
+    <div class="section-name">Section B — Awareness of AI in Cataloguing</div>
+    <div class="section-desc">5 questions · What you know about AI tools in library cataloguing</div>
+  </div>
+
+  <!-- Q6 -->
+  <div class="q-card">
+    <div class="q-num">Q6 OF 25</div>
+    <div class="q-text">Have you heard of AI being used in library cataloguing or metadata work?<span class="q-required">*</span></div>
+    <div class="options-list" data-type="radio" data-q="q6">
+      <div class="opt-item" onclick="selectOpt(this)"><div class="opt-radio"></div><div class="opt-label">Yes — I am very familiar with it</div></div>
+      <div class="opt-item" onclick="selectOpt(this)"><div class="opt-radio"></div><div class="opt-label">Yes — I have heard about it but do not know the details</div></div>
+      <div class="opt-item" onclick="selectOpt(this)"><div class="opt-radio"></div><div class="opt-label">I have come across it but never explored further</div></div>
+      <div class="opt-item" onclick="selectOpt(this)"><div class="opt-radio"></div><div class="opt-label">No — this is the first time I am reading about it</div></div>
+    </div>
+  </div>
+
+  <!-- Q7 -->
+  <div class="q-card">
+    <div class="q-num">Q7 OF 25</div>
+    <div class="q-text">Which of the following AI tools for cataloguing have you heard of or used?<span class="q-required">*</span></div>
+    <div class="q-hint">Select all that apply</div>
+    <div class="options-list" data-type="checkbox" data-q="q7">
+      <div class="opt-item" onclick="toggleCheck(this)"><div class="opt-check"></div><div class="opt-label">CatalogerGPT</div></div>
+      <div class="opt-item" onclick="toggleCheck(this)"><div class="opt-check"></div><div class="opt-label">MARC-AI Cataloger</div></div>
+      <div class="opt-item" onclick="toggleCheck(this)"><div class="opt-check"></div><div class="opt-label">Annif / Finto AI (subject indexing tool)</div></div>
+      <div class="opt-item" onclick="toggleCheck(this)"><div class="opt-check"></div><div class="opt-label">Ex Libris AI Metadata Assistant (inside Alma)</div></div>
+      <div class="opt-item" onclick="toggleCheck(this)"><div class="opt-check"></div><div class="opt-label">MarcEdit with AI features</div></div>
+      <div class="opt-item" onclick="toggleCheck(this)"><div class="opt-check"></div><div class="opt-label">ChatGPT / Copilot (used for cataloguing tasks)</div></div>
+      <div class="opt-item" onclick="toggleCheck(this)"><div class="opt-check"></div><div class="opt-label">None of the above</div></div>
+    </div>
+  </div>
+
+  <!-- Q8 -->
+  <div class="q-card">
+    <div class="q-num">Q8 OF 25</div>
+    <div class="q-text">Where did you first learn about AI tools for cataloguing?<span class="q-required">*</span></div>
+    <div class="options-list" data-type="radio" data-q="q8">
+      <div class="opt-item" onclick="selectOpt(this)"><div class="opt-radio"></div><div class="opt-label">Professional journal or research article</div></div>
+      <div class="opt-item" onclick="selectOpt(this)"><div class="opt-radio"></div><div class="opt-label">Conference, seminar, or workshop</div></div>
+      <div class="opt-item" onclick="selectOpt(this)"><div class="opt-radio"></div><div class="opt-label">Social media or LinkedIn</div></div>
+      <div class="opt-item" onclick="selectOpt(this)"><div class="opt-radio"></div><div class="opt-label">Colleague or supervisor</div></div>
+      <div class="opt-item" onclick="selectOpt(this)"><div class="opt-radio"></div><div class="opt-label">INFLIBNET or UGC training programme</div></div>
+      <div class="opt-item" onclick="selectOpt(this)"><div class="opt-radio"></div><div class="opt-label">I have not learned about it yet</div></div>
+    </div>
+  </div>
+
+  <!-- Q9 -->
+  <div class="q-card">
+    <div class="q-num">Q9 OF 25</div>
+    <div class="q-text">Has your library provided any training on AI tools for cataloguing or metadata work?<span class="q-required">*</span></div>
+    <div class="options-list" data-type="radio" data-q="q9">
+      <div class="opt-item" onclick="selectOpt(this)"><div class="opt-radio"></div><div class="opt-label">Yes — formal training was provided</div></div>
+      <div class="opt-item" onclick="selectOpt(this)"><div class="opt-radio"></div><div class="opt-label">Yes — informal or self-directed guidance was given</div></div>
+      <div class="opt-item" onclick="selectOpt(this)"><div class="opt-radio"></div><div class="opt-label">No — but I would welcome such training</div></div>
+      <div class="opt-item" onclick="selectOpt(this)"><div class="opt-radio"></div><div class="opt-label">No — and I am not sure it is needed</div></div>
+    </div>
+  </div>
+
+  <!-- Q10 -->
+  <div class="q-card">
+    <div class="q-num">Q10 OF 25</div>
+    <div class="q-text">Does your library have a written policy on the use of AI in cataloguing or technical services?<span class="q-required">*</span></div>
+    <div class="options-list" data-type="radio" data-q="q10">
+      <div class="opt-item" onclick="selectOpt(this)"><div class="opt-radio"></div><div class="opt-label">Yes — a formal policy exists</div></div>
+      <div class="opt-item" onclick="selectOpt(this)"><div class="opt-radio"></div><div class="opt-label">A policy is currently being developed</div></div>
+      <div class="opt-item" onclick="selectOpt(this)"><div class="opt-radio"></div><div class="opt-label">No — but AI use is discussed informally</div></div>
+      <div class="opt-item" onclick="selectOpt(this)"><div class="opt-radio"></div><div class="opt-label">No — there is no policy or discussion</div></div>
+    </div>
+  </div>
+
+  <!-- SECTION C -->
+  <div class="section-label">
+    <div class="section-name">Section C — Current Use of AI in Your Work</div>
+    <div class="section-desc">5 questions · Your actual use of AI for cataloguing tasks</div>
+  </div>
+
+  <!-- Q11 -->
+  <div class="q-card">
+    <div class="q-num">Q11 OF 25</div>
+    <div class="q-text">Are you currently using any AI tool (including ChatGPT) for cataloguing or metadata tasks?<span class="q-required">*</span></div>
+    <div class="options-list" data-type="radio" data-q="q11">
+      <div class="opt-item" onclick="selectOpt(this)"><div class="opt-radio"></div><div class="opt-label">Yes — I use it regularly</div></div>
+      <div class="opt-item" onclick="selectOpt(this)"><div class="opt-radio"></div><div class="opt-label">Yes — occasionally, as an experiment</div></div>
+      <div class="opt-item" onclick="selectOpt(this)"><div class="opt-radio"></div><div class="opt-label">No — but I have tried it once or twice</div></div>
+      <div class="opt-item" onclick="selectOpt(this)"><div class="opt-radio"></div><div class="opt-label">No — I have never used AI for cataloguing</div></div>
+    </div>
+  </div>
+
+  <!-- Q12 -->
+  <div class="q-card">
+    <div class="q-num">Q12 OF 25</div>
+    <div class="q-text">For which cataloguing tasks would you use or consider using AI?<span class="q-required">*</span></div>
+    <div class="q-hint">Select all that apply</div>
+    <div class="options-list" data-type="checkbox" data-q="q12">
+      <div class="opt-item" onclick="toggleCheck(this)"><div class="opt-check"></div><div class="opt-label">Assigning subject headings (LCSH)</div></div>
+      <div class="opt-item" onclick="toggleCheck(this)"><div class="opt-check"></div><div class="opt-label">Generating DDC / classification numbers</div></div>
+      <div class="opt-item" onclick="toggleCheck(this)"><div class="opt-check"></div><div class="opt-label">Creating full MARC records</div></div>
+      <div class="opt-item" onclick="toggleCheck(this)"><div class="opt-check"></div><div class="opt-label">Correcting or cleaning up existing records</div></div>
+      <div class="opt-item" onclick="toggleCheck(this)"><div class="opt-check"></div><div class="opt-label">Handling metadata for non-English / Indian language materials</div></div>
+      <div class="opt-item" onclick="toggleCheck(this)"><div class="opt-check"></div><div class="opt-label">Generating abstracts or summaries</div></div>
+      <div class="opt-item" onclick="toggleCheck(this)"><div class="opt-check"></div><div class="opt-label">I would not use AI for any cataloguing task</div></div>
+    </div>
+  </div>
+
+  <!-- Q13 -->
+  <div class="q-card">
+    <div class="q-num">Q13 OF 25</div>
+    <div class="q-text">What is the most time-consuming cataloguing task in your library?<span class="q-required">*</span></div>
+    <div class="options-list" data-type="radio" data-q="q13">
+      <div class="opt-item" onclick="selectOpt(this)"><div class="opt-radio"></div><div class="opt-label">Assigning subject headings</div></div>
+      <div class="opt-item" onclick="selectOpt(this)"><div class="opt-radio"></div><div class="opt-label">Assigning DDC / classification numbers</div></div>
+      <div class="opt-item" onclick="selectOpt(this)"><div class="opt-radio"></div><div class="opt-label">Entering bibliographic data (title, author, publisher etc.)</div></div>
+      <div class="opt-item" onclick="selectOpt(this)"><div class="opt-radio"></div><div class="opt-label">Handling Indian language materials</div></div>
+      <div class="opt-item" onclick="selectOpt(this)"><div class="opt-radio"></div><div class="opt-label">Authority control (verifying author names, subject terms)</div></div>
+      <div class="opt-item" onclick="selectOpt(this)"><div class="opt-radio"></div><div class="opt-label">Clearing backlog of uncatalogued items</div></div>
+    </div>
+  </div>
+
+  <!-- Q14 -->
+  <div class="q-card">
+    <div class="q-num">Q14 OF 25</div>
+    <div class="q-text">Does your library have a backlog of uncatalogued materials?<span class="q-required">*</span></div>
+    <div class="options-list" data-type="radio" data-q="q14">
+      <div class="opt-item" onclick="selectOpt(this)"><div class="opt-radio"></div><div class="opt-label">Yes — a very large backlog (thousands of items)</div></div>
+      <div class="opt-item" onclick="selectOpt(this)"><div class="opt-radio"></div><div class="opt-label">Yes — a moderate backlog</div></div>
+      <div class="opt-item" onclick="selectOpt(this)"><div class="opt-radio"></div><div class="opt-label">Small backlog — mostly up to date</div></div>
+      <div class="opt-item" onclick="selectOpt(this)"><div class="opt-radio"></div><div class="opt-label">No backlog at all</div></div>
+    </div>
+  </div>
+
+  <!-- Q15 -->
+  <div class="q-card">
+    <div class="q-num">Q15 OF 25</div>
+    <div class="q-text">When you use AI-generated cataloguing output, what do you do with it?<span class="q-required">*</span></div>
+    <div class="options-list" data-type="radio" data-q="q15">
+      <div class="opt-item" onclick="selectOpt(this)"><div class="opt-radio"></div><div class="opt-label">I accept it as-is and add it directly to the catalogue</div></div>
+      <div class="opt-item" onclick="selectOpt(this)"><div class="opt-radio"></div><div class="opt-label">I review it carefully and correct errors before using it</div></div>
+      <div class="opt-item" onclick="selectOpt(this)"><div class="opt-radio"></div><div class="opt-label">I use it as a starting point and modify it heavily</div></div>
+      <div class="opt-item" onclick="selectOpt(this)"><div class="opt-radio"></div><div class="opt-label">I use it only for reference and mostly do the work myself</div></div>
+      <div class="opt-item" onclick="selectOpt(this)"><div class="opt-radio"></div><div class="opt-label">Not applicable — I have not used AI for cataloguing</div></div>
+    </div>
+  </div>
+
+  <!-- SECTION D -->
+  <div class="section-label">
+    <div class="section-name">Section D — Benefits, Challenges and Concerns</div>
+    <div class="section-desc">6 questions · Your views on AI adoption in cataloguing</div>
+  </div>
+
+  <!-- Q16 LIKERT -->
+  <div class="q-card">
+    <div class="q-num">Q16 OF 25</div>
+    <div class="q-text">Rate your agreement with each statement.<span class="q-required">*</span></div>
+    <div class="q-hint">1 = Strongly Disagree, 5 = Strongly Agree</div>
+    <div class="likert-wrap">
+      <table class="likert-table">
+        <thead class="likert-header">
+          <tr>
+            <th style="width:48%;">Statement</th>
+            <th>1</th><th>2</th><th>3</th><th>4</th><th>5</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr class="likert-row">
+            <td>AI tools can reduce cataloguing time significantly</td>
+            <td><button class="likert-btn" onclick="likertClick(this)">1</button></td>
+            <td><button class="likert-btn" onclick="likertClick(this)">2</button></td>
+            <td><button class="likert-btn" onclick="likertClick(this)">3</button></td>
+            <td><button class="likert-btn" onclick="likertClick(this)">4</button></td>
+            <td><button class="likert-btn" onclick="likertClick(this)">5</button></td>
+          </tr>
+          <tr class="likert-row">
+            <td>AI-generated metadata still needs human review before use</td>
+            <td><button class="likert-btn" onclick="likertClick(this)">1</button></td>
+            <td><button class="likert-btn" onclick="likertClick(this)">2</button></td>
+            <td><button class="likert-btn" onclick="likertClick(this)">3</button></td>
+            <td><button class="likert-btn" onclick="likertClick(this)">4</button></td>
+            <td><button class="likert-btn" onclick="likertClick(this)">5</button></td>
+          </tr>
+          <tr class="likert-row">
+            <td>AI tools can improve consistency across catalogue records</td>
+            <td><button class="likert-btn" onclick="likertClick(this)">1</button></td>
+            <td><button class="likert-btn" onclick="likertClick(this)">2</button></td>
+            <td><button class="likert-btn" onclick="likertClick(this)">3</button></td>
+            <td><button class="likert-btn" onclick="likertClick(this)">4</button></td>
+            <td><button class="likert-btn" onclick="likertClick(this)">5</button></td>
+          </tr>
+          <tr class="likert-row">
+            <td>AI is a threat to the professional role of cataloguers</td>
+            <td><button class="likert-btn" onclick="likertClick(this)">1</button></td>
+            <td><button class="likert-btn" onclick="likertClick(this)">2</button></td>
+            <td><button class="likert-btn" onclick="likertClick(this)">3</button></td>
+            <td><button class="likert-btn" onclick="likertClick(this)">4</button></td>
+            <td><button class="likert-btn" onclick="likertClick(this)">5</button></td>
+          </tr>
+          <tr class="likert-row">
+            <td>I am confident I could learn to use AI cataloguing tools with proper training</td>
+            <td><button class="likert-btn" onclick="likertClick(this)">1</button></td>
+            <td><button class="likert-btn" onclick="likertClick(this)">2</button></td>
+            <td><button class="likert-btn" onclick="likertClick(this)">3</button></td>
+            <td><button class="likert-btn" onclick="likertClick(this)">4</button></td>
+            <td><button class="likert-btn" onclick="likertClick(this)">5</button></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Q17 -->
+  <div class="q-card">
+    <div class="q-num">Q17 OF 25</div>
+    <div class="q-text">What is the biggest benefit you see in using AI for cataloguing?<span class="q-required">*</span></div>
+    <div class="options-list" data-type="radio" data-q="q17">
+      <div class="opt-item" onclick="selectOpt(this)"><div class="opt-radio"></div><div class="opt-label">Faster cataloguing of large collections</div></div>
+      <div class="opt-item" onclick="selectOpt(this)"><div class="opt-radio"></div><div class="opt-label">More consistent and standardised records</div></div>
+      <div class="opt-item" onclick="selectOpt(this)"><div class="opt-radio"></div><div class="opt-label">Reducing backlog of uncatalogued materials</div></div>
+      <div class="opt-item" onclick="selectOpt(this)"><div class="opt-radio"></div><div class="opt-label">Freeing cataloguers to focus on complex work</div></div>
+      <div class="opt-item" onclick="selectOpt(this)"><div class="opt-radio"></div><div class="opt-label">Better discoverability of library resources</div></div>
+      <div class="opt-item" onclick="selectOpt(this)"><div class="opt-radio"></div><div class="opt-label">I do not see any significant benefit</div></div>
+    </div>
+  </div>
+
+  <!-- Q18 -->
+  <div class="q-card">
+    <div class="q-num">Q18 OF 25</div>
+    <div class="q-text">What is your biggest concern about using AI for cataloguing?<span class="q-required">*</span></div>
+    <div class="options-list" data-type="radio" data-q="q18">
+      <div class="opt-item" onclick="selectOpt(this)"><div class="opt-radio"></div><div class="opt-label">AI may generate incorrect subject headings or classification numbers</div></div>
+      <div class="opt-item" onclick="selectOpt(this)"><div class="opt-radio"></div><div class="opt-label">AI tools do not support Indian language materials well</div></div>
+      <div class="opt-item" onclick="selectOpt(this)"><div class="opt-radio"></div><div class="opt-label">Data privacy and security of bibliographic records</div></div>
+      <div class="opt-item" onclick="selectOpt(this)"><div class="opt-radio"></div><div class="opt-label">I cannot understand how the AI makes its decisions (black-box problem)</div></div>
+      <div class="opt-item" onclick="selectOpt(this)"><div class="opt-radio"></div><div class="opt-label">AI may eventually replace cataloguers' jobs</div></div>
+      <div class="opt-item" onclick="selectOpt(this)"><div class="opt-radio"></div><div class="opt-label">I have no significant concerns</div></div>
+    </div>
+  </div>
+
+  <!-- Q19 -->
+  <div class="q-card">
+    <div class="q-num">Q19 OF 25</div>
+    <div class="q-text">How well do current AI cataloguing tools support Indian language materials (Hindi, Assamese, Bengali, Tamil etc.)?<span class="q-required">*</span></div>
+    <div class="options-list" data-type="radio" data-q="q19">
+      <div class="opt-item" onclick="selectOpt(this)"><div class="opt-radio"></div><div class="opt-label">Very well — I have used them for Indian language materials</div></div>
+      <div class="opt-item" onclick="selectOpt(this)"><div class="opt-radio"></div><div class="opt-label">Reasonably well — some limitations but usable</div></div>
+      <div class="opt-item" onclick="selectOpt(this)"><div class="opt-radio"></div><div class="opt-label">Poorly — Indian language support is inadequate</div></div>
+      <div class="opt-item" onclick="selectOpt(this)"><div class="opt-radio"></div><div class="opt-label">I have not tried using AI tools for Indian language materials</div></div>
+      <div class="opt-item" onclick="selectOpt(this)"><div class="opt-radio"></div><div class="opt-label">I am not aware of any AI tool that supports Indian languages</div></div>
+    </div>
+  </div>
+
+  <!-- Q20 -->
+  <div class="q-card">
+    <div class="q-num">Q20 OF 25</div>
+    <div class="q-text">Is the lack of Indian language support in AI tools a significant problem for your library?<span class="q-required">*</span></div>
+    <div class="options-list" data-type="radio" data-q="q20">
+      <div class="opt-item" onclick="selectOpt(this)"><div class="opt-radio"></div><div class="opt-label">Yes — a major problem, a large part of our collection is in Indian languages</div></div>
+      <div class="opt-item" onclick="selectOpt(this)"><div class="opt-radio"></div><div class="opt-label">Yes — a moderate problem</div></div>
+      <div class="opt-item" onclick="selectOpt(this)"><div class="opt-radio"></div><div class="opt-label">No — most of our collection is in English</div></div>
+      <div class="opt-item" onclick="selectOpt(this)"><div class="opt-radio"></div><div class="opt-label">I am not sure</div></div>
+    </div>
+  </div>
+
+  <!-- SECTION E -->
+  <div class="section-label">
+    <div class="section-name">Section E — Institutional Readiness and Future Plans</div>
+    <div class="section-desc">4 questions · Your library's readiness to adopt AI cataloguing tools</div>
+  </div>
+
+  <!-- Q21 -->
+  <div class="q-card">
+    <div class="q-num">Q21 OF 25</div>
+    <div class="q-text">Does your library have the technical infrastructure needed to use AI cataloguing tools?<span class="q-required">*</span></div>
+    <div class="options-list" data-type="radio" data-q="q21">
+      <div class="opt-item" onclick="selectOpt(this)"><div class="opt-radio"></div><div class="opt-label">Yes — fully equipped (computers, internet, software access)</div></div>
+      <div class="opt-item" onclick="selectOpt(this)"><div class="opt-radio"></div><div class="opt-label">Partly — some tools are accessible but infrastructure is limited</div></div>
+      <div class="opt-item" onclick="selectOpt(this)"><div class="opt-radio"></div><div class="opt-label">No — infrastructure is a major barrier</div></div>
+      <div class="opt-item" onclick="selectOpt(this)"><div class="opt-radio"></div><div class="opt-label">I am not sure</div></div>
+    </div>
+  </div>
+
+  <!-- Q22 -->
+  <div class="q-card">
+    <div class="q-num">Q22 OF 25</div>
+    <div class="q-text">If a free, easy-to-use AI cataloguing tool were available for Koha, how likely would you be to use it?<span class="q-required">*</span></div>
+    <div class="options-list" data-type="radio" data-q="q22">
+      <div class="opt-item" onclick="selectOpt(this)"><div class="opt-radio"></div><div class="opt-label">Very likely — I would start immediately</div></div>
+      <div class="opt-item" onclick="selectOpt(this)"><div class="opt-radio"></div><div class="opt-label">Likely — I would try it after some training</div></div>
+      <div class="opt-item" onclick="selectOpt(this)"><div class="opt-radio"></div><div class="opt-label">Unsure — I need more information first</div></div>
+      <div class="opt-item" onclick="selectOpt(this)"><div class="opt-radio"></div><div class="opt-label">Unlikely — I prefer traditional cataloguing methods</div></div>
+      <div class="opt-item" onclick="selectOpt(this)"><div class="opt-radio"></div><div class="opt-label">Very unlikely — I do not trust AI for this purpose</div></div>
+    </div>
+  </div>
+
+  <!-- Q23 -->
+  <div class="q-card">
+    <div class="q-num">Q23 OF 25</div>
+    <div class="q-text">Should INFLIBNET or a national body provide a centralised AI cataloguing support service for Indian university libraries?<span class="q-required">*</span></div>
+    <div class="options-list" data-type="radio" data-q="q23">
+      <div class="opt-item" onclick="selectOpt(this)"><div class="opt-radio"></div><div class="opt-label">Yes — strongly, this would be very useful</div></div>
+      <div class="opt-item" onclick="selectOpt(this)"><div class="opt-radio"></div><div class="opt-label">Yes — but only as an optional supplement to manual cataloguing</div></div>
+      <div class="opt-item" onclick="selectOpt(this)"><div class="opt-radio"></div><div class="opt-label">Neutral — I am not sure</div></div>
+      <div class="opt-item" onclick="selectOpt(this)"><div class="opt-radio"></div><div class="opt-label">No — individual libraries should manage their own tools</div></div>
+      <div class="opt-item" onclick="selectOpt(this)"><div class="opt-radio"></div><div class="opt-label">No — AI should not be used in cataloguing</div></div>
+    </div>
+  </div>
+
+  <!-- Q24 -->
+  <div class="q-card">
+    <div class="q-num">Q24 OF 25</div>
+    <div class="q-text">What would most help you adopt AI cataloguing tools? <span class="q-required">*</span></div>
+    <div class="q-hint">Select up to two options</div>
+    <div class="options-list" data-type="checkbox" data-q="q24" data-max="2">
+      <div class="opt-item" onclick="toggleCheck(this,'q24',2)"><div class="opt-check"></div><div class="opt-label">A hands-on training workshop on AI cataloguing tools</div></div>
+      <div class="opt-item" onclick="toggleCheck(this,'q24',2)"><div class="opt-check"></div><div class="opt-label">Clear guidelines or policy from INFLIBNET / UGC</div></div>
+      <div class="opt-item" onclick="toggleCheck(this,'q24',2)"><div class="opt-check"></div><div class="opt-label">A free, easy-to-use tool compatible with Koha</div></div>
+      <div class="opt-item" onclick="toggleCheck(this,'q24',2)"><div class="opt-check"></div><div class="opt-label">Case studies from other Indian libraries that have adopted AI</div></div>
+      <div class="opt-item" onclick="toggleCheck(this,'q24',2)"><div class="opt-check"></div><div class="opt-label">Support for Indian language metadata generation</div></div>
+      <div class="opt-item" onclick="toggleCheck(this,'q24',2)"><div class="opt-check"></div><div class="opt-label">Nothing — I am already using or ready to use AI tools</div></div>
+    </div>
+  </div>
+
+  <!-- SECTION F -->
+  <div class="section-label">
+    <div class="section-name">Section F — Your Views (Open-Ended)</div>
+    <div class="section-desc">1 question · Optional but valuable for the research</div>
+  </div>
+
+  <!-- Q25 -->
+  <div class="q-card">
+    <div class="q-num">Q25 OF 25</div>
+    <div class="q-text">In your own words, what is the most important challenge your library faces in cataloguing and metadata work today? <span style="color:var(--ink-muted);font-weight:400;font-size:13px;">(Optional)</span></div>
+    <div class="q-hint">Please write 2–4 sentences. Your response will remain confidential.</div>
+    <textarea class="text-input" placeholder="Type your response here..."></textarea>
+  </div>
+
+  <!-- Footer -->
+  <div class="form-footer">
+    <button class="clear-btn" onclick="clearForm()">Clear form</button>
+    <button class="submit-btn" onclick="submitForm()">Submit Response →</button>
+  </div>
+
+  </div><!-- end formBody -->
+
+  <!-- Success screen -->
+  <div class="success-screen" id="successScreen">
+    <div class="success-icon">✦</div>
+    <div class="success-title">Thank you for your response!</div>
+    <div class="success-msg">Your participation is greatly appreciated. This research will contribute to understanding AI adoption in Indian university library cataloguing and will help shape recommendations for INFLIBNET, UGC, and library administrators across India.<br><br><em>— Bipasha Das, Tezpur University</em></div>
+  </div>
+
+</div><!-- end form-shell -->
+
+<script>
+  function selectOpt(el) {
+    const list = el.closest('.options-list');
+    list.querySelectorAll('.opt-item').forEach(i => i.classList.remove('selected'));
+    el.classList.add('selected');
+    updateProgress();
+  }
+
+  function toggleCheck(el, qid, max) {
+    const list = el.closest('.options-list');
+    const checked = list.querySelectorAll('.opt-item.checked');
+    if (el.classList.contains('checked')) {
+      el.classList.remove('checked');
+    } else {
+      if (max && checked.length >= max) return;
+      el.classList.add('checked');
+    }
+    updateProgress();
+  }
+
+  function likertClick(btn) {
+    const row = btn.closest('tr');
+    row.querySelectorAll('.likert-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    updateProgress();
+  }
+
+  function updateProgress() {
+    const total = 24; // required questions
+    let answered = 0;
+    document.querySelectorAll('.options-list[data-type="radio"]').forEach(list => {
+      if (list.querySelector('.opt-item.selected')) answered++;
+    });
+    document.querySelectorAll('.options-list[data-type="checkbox"]').forEach(list => {
+      if (list.querySelector('.opt-item.checked')) answered++;
+    });
+    document.querySelectorAll('.likert-table tbody tr').forEach(row => {
+      if (row.querySelector('.likert-btn.active')) answered++;
+    });
+    const pct = Math.min(100, Math.round((answered / total) * 100));
+    document.getElementById('progressFill').style.width = pct + '%';
+  }
+
+  function clearForm() {
+    document.querySelectorAll('.opt-item').forEach(i => { i.classList.remove('selected','checked'); });
+    document.querySelectorAll('.likert-btn').forEach(b => b.classList.remove('active'));
+    document.querySelectorAll('textarea').forEach(t => t.value = '');
+    document.getElementById('progressFill').style.width = '0%';
+  }
+
+// =========================
+// HELPER FUNCTIONS
+// =========================
+
+function getRadioValue(q) {
+  const selected = document.querySelector(`[data-q="${q}"] .opt-item.selected`);
+  return selected ? selected.innerText.trim() : "";
+}
+
+function getCheckboxValues(q) {
+  const checked = document.querySelectorAll(`[data-q="${q}"] .opt-item.checked`);
+  return Array.from(checked).map(el => el.innerText.trim()).join(", ");
+}
+
+function getLikertValues() {
+  const rows = document.querySelectorAll('.likert-row');
+  return Array.from(rows).map(row => {
+    const active = row.querySelector('.likert-btn.active');
+    return active ? active.innerText : "";
+  }).join(" | ");
+}
+
+// =========================
+// FINAL SUBMIT FUNCTION
+// =========================
+
+function submitForm() {
+
+  const data = {
+    q1: getRadioValue('q1'),
+    q2: getRadioValue('q2'),
+    q3: getRadioValue('q3'),
+    q4: getCheckboxValues('q4'),
+    q5: getRadioValue('q5'),
+    q6: getRadioValue('q6'),
+    q7: getCheckboxValues('q7'),
+    q8: getRadioValue('q8'),
+    q9: getRadioValue('q9'),
+    q10: getRadioValue('q10'),
+    q11: getRadioValue('q11'),
+    q12: getCheckboxValues('q12'),
+    q13: getRadioValue('q13'),
+    q14: getRadioValue('q14'),
+    q15: getRadioValue('q15'),
+    const likert = getLikertValues().split(" | ");
+
+const data = {
+  q1: getRadioValue('q1'),
+  q2: getRadioValue('q2'),
+  ...
+  q15: getRadioValue('q15'),
+  q16_1: likert[0],
+  q16_2: likert[1],
+  q16_3: likert[2],
+  q16_4: likert[3],
+  q16_5: likert[4],
+
+  q17: getRadioValue('q17'),
+  ...
+};
+    q17: getRadioValue('q17'),
+    q18: getRadioValue('q18'),
+    q19: getRadioValue('q19'),
+    q20: getRadioValue('q20'),
+    q21: getRadioValue('q21'),
+    q22: getRadioValue('q22'),
+    q23: getRadioValue('q23'),
+    q24: getCheckboxValues('q24'),
+    q25: document.querySelector('textarea').value
+  };
+
+  fetch("https://script.google.com/macros/s/AKfycbwSUynaGr2a20TS57CY6sZdItID5yXVtRp1E7DE-eLOkvJOT6u6bkAAhAkgIfsqj23k/exec", {
+    method: "POST",
+    body: JSON.stringify(data),
+    headers: {
+      "Content-Type": "application/json"
+    }
+  })
+  .then(() => {
+    document.getElementById('formBody').style.display = 'none';
+    document.getElementById('successScreen').style.display = 'block';
+    document.getElementById('progressFill').style.width = '100%';
+  })
+  .catch(err => {
+    alert("Submission failed");
+    console.error(err);
+  });
+}
+</script>
+</body>
+</html>
